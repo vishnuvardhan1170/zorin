@@ -55,8 +55,8 @@ ArgoCD (GitOps - sync)
 
 ```bash
 # Clone repo
-git clone https://github.com/vishnuvardhan1170/test.git
-cd test
+git clone https://github.com/vishnuvardhan1170/zorin.git
+cd zorin
 
 # Start services
 docker-compose up -d
@@ -115,7 +115,7 @@ kubectl delete namespace zorin
    ├─ Helm chart validation
    └─ Terraform format check
               ↓
-4. Peer review & approval
+4. Review & approval
               ↓
 5. Merge to main
               ↓
@@ -169,8 +169,8 @@ kubectl port-forward -n argocd svc/argocd-server 8080:443
 ```
 zorin/
 ├── .github/workflows/
-│   ├── lint.yaml              # Code quality checks
-│   └── cicd.yaml              # Build & deploy pipeline
+│   ├── lint.yaml
+│   └── cicd.yaml
 │
 ├── helm/
 │   ├── Chart.yaml
