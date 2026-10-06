@@ -1,0 +1,79 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app.py"
+      - "requirements.txt"
+      - "Dockerfile"
+      - ".github/workflows/**"
+      - "helm/**"
+      - "tf/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install flake8 mypy black
+          pip install -r requirements.txt
+
+      - name: Run flake8
+        run: flake8 app.py --max-line-length=120 --statistics
+
+      - name: Run mypy
+        run: mypy app.py --ignore-missing-imports
+
+      - name: Check formatting
+        run: black --check app.py
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Lint Helm chart
+        run: helm lint helm/
+
+      - name: Template Helm chart
+        run: helm template zorin helm/ > /dev/null
+
+  terraform-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init
+        working-directory: tf
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        working-directory: tf
+        run: terraform validate
+
+      - name: Terraform Format Check
+        working-directory: tf
+        run: terraform fmt -check -diff
