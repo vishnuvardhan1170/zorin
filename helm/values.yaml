@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: vishnusai1/zorin:latest
+  repository: vishnusai1/zorin
   tag: "latest"
   pullPolicy: IfNotPresent
 
